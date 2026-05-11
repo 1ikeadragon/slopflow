@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_HOME="${CLAUDE_HOME:-$HOME/.claude}"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
+LEGACY_SKILLS=("security-review")
 
 usage() {
   cat <<'USAGE'
@@ -94,6 +95,14 @@ install_skill_dir() {
 install_skills_to() {
   local skills_root="$1"
   local skill
+  local legacy
+
+  for legacy in "${LEGACY_SKILLS[@]}"; do
+    if [ -e "$skills_root/$legacy" ] || [ -L "$skills_root/$legacy" ]; then
+      backup_path "$skills_root/$legacy"
+      run rm -rf "$skills_root/$legacy"
+    fi
+  done
 
   for skill in "$ROOT_DIR"/skills/*; do
     [ -d "$skill" ] || continue

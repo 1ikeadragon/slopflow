@@ -45,7 +45,7 @@ Use focused skills for detailed workflows instead of loading all guidance at run
 - `implementation-discipline`: coding workflow, implementation plans, plan audits, validation, and post-implementation audits.
 - `architecture-review`: system design, architecture reads, data/control flow, runtime configuration, and tradeoff analysis.
 - `code-review-discipline`: correctness review, regression risk, meaningful tests, and review verdicts.
-- `security-review`: threat modeling, attacker-controlled data flow, enforcement points, exploitability, and security findings.
+- `rca-investigation`: wide and deep incident RCA, competing hypotheses, timelines, proof levels, persistent artifact inspection, code-path tracing, and systemic fixes.
 - `legacy-cleanup`: dead-code classification, reachability checks, migration leftovers, quarantine/delete decisions, and cleanup validation.
 
 If multiple skills apply, state the order before proceeding. Do not mix modes silently.
@@ -55,7 +55,7 @@ If multiple skills apply, state the order before proceeding. Do not mix modes si
 - Use `architect` for system design, RFCs, architecture changes, and production-path mapping.
 - Use `reviewer` for PR/code review and correctness checks.
 - Use `coder` for implementation.
-- Use `security-reviewer` for vulnerability analysis and exploitability review.
+- Use `rca-investigator` for wide and deep root-cause analysis of incidents, workflow failures, infrastructure failures, and regressions.
 - Use `legacy-cleaner` for dead code, cleanup, migration, and refactor safety.
 
 ## Default Response Shape
