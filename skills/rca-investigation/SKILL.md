@@ -1,7 +1,7 @@
 ---
 name: rca-investigation
 description: This skill should be used when the user asks for "RCA", "root cause analysis", "wide and deep RCA", "incident analysis", "workflow failure analysis", "why did this fail", "investigate a failed run", "OOM analysis", "API limit analysis", "restart analysis", "stale endpoint analysis", or asks to trace logs, metrics, DB artifacts, code paths, and systemic fixes without jumping to conclusions.
-version: 1.1.0
+version: 1.4.0
 ---
 
 # RCA Investigation
@@ -134,6 +134,71 @@ Before reasoning about failure semantics, identify the execution substrate:
 
 Failure semantics differ. Example: under gVisor, when the kernel OOM-kills the runsc sandbox process, Kubernetes may not mark `Reason=OOMKilled` on the in-container app; the proof moves to the node kernel log and container runtime events. On a hosted CI runner, the proof may instead live in runner diagnostics, step exit codes, hosted-runner service logs, or provider status events. Do not apply one platform's failure semantics to another platform without checking.
 
+## 3c. Production-Path Verification
+
+Before recommending fixes that target a specific code location, and certainly before claiming a code path is "the bug", prove the path is on the live execution path for the incident. Code existence is not execution proof. Search matches are not execution proof.
+
+Three lines of evidence are required:
+
+1. **Entrypoint registration**: the code is wired into the runtime entrypoint. Examples:
+   - workflow/activity/task registered in the worker
+   - HTTP handler attached to the router/server
+   - cron or scheduler job registered with the dispatcher
+   - subscriber registered on the queue, stream, or event bus
+   - CI step or action referenced by the workflow file that ran
+2. **Invocation chain**: a workflow, caller, parent job, route, queue, or step actually reaches this code with the same identifiers seen in the incident.
+3. **Runtime trace**: logs, metrics, traces, spans, job output, or audit records from the incident window show this exact code ran.
+
+Check for negation:
+
+- feature flags, skip flags, config gates, or environment-specific branches
+- recent deprecation or replacement
+- sibling alternatives such as v2/v3/newer modules
+- string-based dispatch that routes to a different implementation
+- conditional imports or build-time substitution
+
+State explicitly in the RCA: "verified by (1) entrypoint registration at ..., (2) invocation chain matching incident identifier ..., (3) runtime trace showing ...". If any of the three is missing, the fix may target dead code or a downstream symptom.
+
+## 3d. Decomposition Before Attribution
+
+When observing a single aggregate signal (memory at limit, latency spike, error rate, CPU saturation, queue backlog), decompose the aggregate into its parts before naming a cause. Plausible-mechanism narratives are easy to invent and hard to falsify; measured decompositions are not.
+
+For each aggregate signal, identify the available decomposition primitives:
+
+- **Memory**: process RSS/PSS, heap, anon memory, file/page cache, shmem, slab/kernel memory, cgroup/container memory, runtime allocator metrics. If the metric provider does not export the breakdown, collect it from the host, runtime, process, or container where possible.
+- **Latency**: trace breakdown by span or phase: queueing, network, DNS/TLS, database, cache, LLM/provider call, framework overhead, serialization, artifact upload/download.
+- **Error rate**: classify by error class: 4xx, 5xx, timeout, connection refused, DNS failure, TLS failure, rate limit, auth failure, validation failure.
+- **CPU saturation**: user time, kernel time, scheduler latency, throttling counters, steal time, GC/runtime time.
+- **Queue/backlog**: enqueue rate, dequeue rate, worker concurrency, retry count, poison-message rate, lock contention.
+- **Artifact/storage growth**: file count, byte size, compression ratio, duplicate entries, cache hit/miss split, upload/download timing.
+
+Rule:
+
+```text
+Pattern-fit produces hypotheses. Decomposition produces conclusions.
+```
+
+If a statement depends on mechanism but the mechanism was not measured, label it as inferred:
+
+```text
+Plausibly X, mechanism inferred but not directly measured.
+```
+
+Do not state "X caused it" without measuring X's contribution or showing direct runtime evidence.
+
+Common pitfalls:
+
+- quoting a process-level statistic as a job/container/host-level cause when multiple processes contribute
+- using a lower-bound metric as if it were an upper bound
+- applying memory-accounting assumptions from one runtime to another
+- attributing growth to allocator arenas, memfd retention, page cache, cache bloat, or artifact volume without measuring that layer's actual share
+- confusing instantaneous metrics with high-water marks
+- querying a parent cgroup/container/job group when the real data is at a child
+- aggregating over a coarse window that hides sub-window peaks
+- calling a bounded oscillating time series "monotonic" without checking point-to-point deltas
+
+When the breakdown is not available, say so directly. "I cannot decompose this aggregate further from available metrics; the dominant contributor is plausibly Y but unmeasured" is acceptable. "The dominant contributor is Y" without measurement is over-claiming.
+
 ## 4. Inspect Persistent Artifacts
 
 Locate or download DBs and artifacts.
@@ -146,6 +211,62 @@ Process:
 4. Quantify magnitude, not just presence.
 
 Use DB evidence only for what it actually proves.
+
+### 4a. Artifact Location Playbook
+
+Do not start with repo-wide grep if the platform has stable artifact conventions. First identify where each artifact class should live for this system, then verify the convention from code/config/runtime metadata.
+
+Build an artifact map:
+
+```text
+Artifact map:
+- workflow/run metadata:
+  - source:
+  - key/id:
+  - timestamp field:
+- logs:
+  - source:
+  - query:
+- DB / state snapshot:
+  - source:
+  - object key or path:
+  - schema/version:
+- traces:
+  - source:
+  - trace/span identifiers:
+- metrics:
+  - source:
+  - series names and labels:
+- build/cache/artifacts:
+  - source:
+  - key/path:
+  - retention policy:
+```
+
+For workflow or CI failures, resolve run identity before artifact identity:
+
+1. Get run id, attempt id, job id, commit SHA, branch/ref, workflow name, runner id, and trigger event.
+2. Use workflow metadata or provider API to find artifact names and retention state.
+3. Compare artifact creation/upload timestamps to the failure window.
+4. If a cache was involved, distinguish cache hit, cache miss, cache restore failure, cache save failure, and stale cache reuse.
+5. For DB/state artifacts, inspect schema before querying and record the artifact version.
+
+For service or distributed-system failures:
+
+1. Resolve service name to concrete endpoint identity at the failure timestamp.
+2. Locate logs at client, server, proxy/gateway, scheduler/orchestrator, and infrastructure/provider scopes.
+3. Locate metrics using stable labels from runtime identity, not only human-readable names.
+4. Link traces by trace id/span id/request id where possible.
+5. Compare against a known-good run or normal time window.
+
+For object stores or artifact buckets:
+
+- derive object keys from source code/config only after proving that source is on the production path
+- verify object existence, size, mtime/generation, checksum/etag, and content type
+- distinguish "artifact absent", "artifact exists but stale", "artifact exists but wrong run", and "artifact exists but unreadable"
+- avoid treating cache existence as cache causality
+
+Treat documented paths as hints, not contracts. Re-verify against current code/config/runtime metadata before relying on them.
 
 ## 5. Trace The Code Path
 
