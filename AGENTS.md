@@ -45,6 +45,7 @@ Use focused skills for detailed workflows instead of loading all guidance at run
 - `implementation-discipline`: coding workflow, implementation plans, plan audits, validation, and post-implementation audits.
 - `architecture-review`: system design, architecture reads, data/control flow, runtime configuration, and tradeoff analysis.
 - `code-review-discipline`: correctness review, regression risk, meaningful tests, and review verdicts.
+- `adversarial-test-design`: invariant-driven adversarial unit tests for security-sensitive, correctness-critical, parser, workflow, AI/LLM, optimization, migration, and concurrency logic.
 - `rca-investigation`: wide and deep incident RCA, competing hypotheses, timelines, proof levels, persistent artifact inspection, code-path tracing, and systemic fixes.
 - `legacy-cleanup`: dead-code classification, reachability checks, migration leftovers, quarantine/delete decisions, and cleanup validation.
 
