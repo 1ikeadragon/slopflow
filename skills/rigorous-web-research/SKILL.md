@@ -10,6 +10,14 @@ Use this skill when implementation, design, product, architecture, security, per
 
 Do not use this skill for every task. Use it when the answer may be stale, the decision has meaningful cost, the user asks for current research, or external practice could change the implementation approach.
 
+## Hard Citation Requirement
+
+Every substantive external claim must include a citation/link. Do not present web-derived facts, competitor behavior, pricing, API behavior, benchmark results, release details, research claims, or current best-practice claims without a source URL.
+
+Citations must appear in the final answer, not only in private notes or intermediate work. If a claim is inferred from sources, cite the source and label the claim as inference.
+
+If browsing/search tools are unavailable, say current web research could not be performed and do not imply the claim was verified online.
+
 ## Trigger Conditions
 
 Use this skill for:
@@ -129,7 +137,7 @@ Claim:
 - ...
 
 Source(s):
-- ...
+- ...  # required URL/link for every substantive external claim
 
 Proof level:
 - primary source / corroborated secondary / single secondary / inference
@@ -241,7 +249,7 @@ Risks / limitations:
 - ...
 
 Exact searches / source links:
-- ...
+- ...  # include the exact URLs used for all substantive external claims
 ```
 
 ## Final Rule
