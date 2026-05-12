@@ -1,16 +1,18 @@
 ---
 name: rca-investigation
-description: This skill should be used when the user asks for "RCA", "root cause analysis", "wide and deep RCA", "incident analysis", "workflow failure analysis", "why did this fail", "investigate a failed run", "Temporal workflow failure", "Temporal workflow id", "OOM analysis", "API limit analysis", "restart analysis", "stale endpoint analysis", or asks to trace logs, metrics, DB artifacts, code paths, and systemic fixes without jumping to conclusions.
-version: 1.5.0
+description: This skill should be used when the user asks for "RCA", "root cause analysis", "wide and deep RCA", "incident analysis", "why did this fail", "investigate a failed run", "OOM analysis", "API limit analysis", "restart analysis", "stale endpoint analysis", regression analysis, or asks to integrate workflow/runtime evidence with code paths, config, DB artifacts, git history, proof levels, and systemic fixes without jumping to conclusions. Use alongside workflow-rca when the input is a workflow/run id, GCP logs, GCS artifacts, cache behavior, or runtime timeline.
+version: 1.6.0
 ---
 
 # RCA Investigation
 
-Use this skill for wide and deep root-cause analysis. Do not jump to a root cause early. First classify the input and resolve the incident lookup path. Then start with competing hypotheses, define what would prove or weaken each one, and identify the artifact type needed: logs, metrics, DB, code, config, or runtime trace.
+Use this skill for wide and deep cumulative root-cause analysis. Do not jump to a root cause early. First classify the input, decide whether `workflow-rca` should collect runtime evidence, then integrate logs, metrics, DB artifacts, code paths, config, git history, and runtime traces into one proof-driven RCA.
 
-## 0. Classify The Input First
+For workflow-centric incidents, `workflow-rca` owns the first-pass runtime evidence collection: workflow ids, GCP Cloud Logging queries, GCS artifact discovery, workflow timelines, cache hit/miss proof, and DB artifact metadata. This skill owns the cumulative analysis: competing hypotheses, code/config tracing, production-path proof, DB interpretation, git-history regression analysis, proof levels, and systemic fixes.
 
-Before forming hypotheses, identify what kind of evidence or identifier the user gave you. Do not assume a repo issue, workflow URL, pod name, or opaque string all imply the same investigation path.
+## 0. Classify The Input And Skill Split
+
+Before forming hypotheses, identify what kind of evidence or identifier the user gave you and which skill should gather which evidence. Do not assume a repo issue, workflow URL, pod name, or opaque string all imply the same investigation path.
 
 Use this structure:
 
@@ -20,66 +22,20 @@ Input classification:
 - parsed identifiers:
 - missing identifiers:
 - likely system:
-- primary artifact lookup path:
+- workflow-rca needed: yes / no / uncertain
+- workflow evidence already available:
+- workflow evidence still needed:
+- code/config/git paths to trace:
 - first commands or queries:
 ```
 
-If the input is ambiguous, search for it literally in likely runtime logs/artifacts before assigning meaning. Preserve uncertainty if the same string could be a workflow id, job id, request id, pod name, or DB key.
+If the input is ambiguous, search for it literally in likely runtime logs/artifacts or repository metadata before assigning meaning. Preserve uncertainty if the same string could be a workflow id, job id, request id, pod name, or DB key.
 
-### Temporal Workflow ID On GCP
-
-If the input appears to be a Temporal workflow id or Temporal run id, treat GCP Cloud Logging as the first runtime-evidence source when `gcloud` is available. Do not start from code speculation.
-
-First record:
-
-- active gcloud account: `gcloud auth list --filter=status:ACTIVE`
-- active project: `gcloud config get-value project`
-- explicit project from the user, env, repo config, or logs if available
-- workflow id and run id if both exist
-- time window if provided; otherwise use a bounded freshness window and label it as assumed
-
-Minimum log discovery commands:
-
-```sh
-PROJECT="$(gcloud config get-value project 2>/dev/null)"
-WORKFLOW_ID="<temporal-workflow-id>"
-gcloud logging read "\"${WORKFLOW_ID}\"" --project="$PROJECT" --freshness=14d --limit=200 --format=json
-gcloud logging read "\"${WORKFLOW_ID}\"" --project="$PROJECT" --freshness=14d --limit=200 --format='table(timestamp,resource.type,resource.labels.namespace_name,resource.labels.pod_name,resource.labels.container_name,severity,logName)'
-```
-
-If a timestamp or approximate failure window is known, replace freshness with explicit timestamp bounds:
-
-```sh
-gcloud logging read "\"${WORKFLOW_ID}\" AND timestamp>=\"<start-iso>\" AND timestamp<=\"<end-iso>\"" --project="$PROJECT" --limit=500 --format=json
-```
-
-If logs identify candidate namespaces, pods, services, workers, task queues, or run ids, pivot into narrower queries:
-
-```sh
-gcloud logging read "\"${WORKFLOW_ID}\" AND resource.labels.namespace_name=\"<namespace>\"" --project="$PROJECT" --freshness=14d --limit=500 --format=json
-gcloud logging read "\"<run-id>\" OR \"${WORKFLOW_ID}\"" --project="$PROJECT" --freshness=14d --limit=500 --format=json
-gcloud logging read "\"<task-queue>\" AND (\"error\" OR \"failed\" OR \"timeout\" OR \"panic\" OR \"exception\")" --project="$PROJECT" --freshness=14d --limit=500 --format=json
-```
-
-For Temporal RCA, extract these fields from logs or runtime metadata before declaring the incident identified:
-
-- namespace
-- workflow id
-- run id
-- workflow type
-- task queue
-- worker service/deployment
-- first failure timestamp
-- last retry/recovery timestamp
-- error type and exact message
-- activity name or workflow task phase if present
-- pod/container/service instance that emitted the failure
-
-If `gcloud` is missing, unauthenticated, or the project is unknown, state that the primary log lookup is blocked and list the exact command that should be run once access is available. Do not claim absence of logs unless you queried the right project and time window.
+If the input is a workflow/run id, Temporal id, CI run URL, GCP log question, GCS artifact question, cache hit/miss question, or runtime timeline question, use `workflow-rca` first or in parallel. Then return to this skill with the workflow evidence packet and continue code/config/DB/git-history proof.
 
 ## Start With Competing Hypotheses
 
-After input classification and initial artifact lookup, list 3-5 plausible hypotheses before investigating.
+After input classification and any needed `workflow-rca` evidence collection, list 3-5 plausible hypotheses before investigating.
 
 For each hypothesis, state:
 

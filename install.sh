@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_HOME="${CLAUDE_HOME:-$HOME/.claude}"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
+BACKUP_ROOT="${SLOPFLOW_BACKUP_ROOT:-$HOME/.slopflow-backups/$STAMP}"
 LEGACY_SKILLS=("security-review")
 
 usage() {
@@ -15,11 +16,13 @@ Installs:
   Claude: ~/.claude/CLAUDE.md and ~/.claude/skills/<skill>/SKILL.md
   Codex:  ~/.codex/AGENTS.md and ~/.codex/skills/<skill>/SKILL.md
 
-Existing prompt files and same-named skills are backed up with a .bak.<timestamp> suffix.
+Existing prompt files and same-named skills are backed up under ~/.slopflow-backups/<timestamp>/.
+Old in-place skill backups named *.bak.* are also archived there so they are not loaded as skills.
 
 Environment overrides:
   CLAUDE_HOME=/custom/.claude
   CODEX_HOME=/custom/.codex
+  SLOPFLOW_BACKUP_ROOT=/custom/backup/path
 USAGE
 }
 
@@ -66,8 +69,25 @@ run() {
 backup_path() {
   local path="$1"
   if [ -e "$path" ] || [ -L "$path" ]; then
-    run cp -a "$path" "$path.bak.$STAMP"
+    local backup="$BACKUP_ROOT$path"
+    run mkdir -p "$(dirname "$backup")"
+    run rm -rf "$backup"
+    run cp -a "$path" "$backup"
   fi
+}
+
+archive_stale_skill_backups() {
+  local skills_root="$1"
+  local label="$2"
+  local stale
+
+  for stale in "$skills_root"/*.bak.*; do
+    [ -e "$stale" ] || [ -L "$stale" ] || continue
+    local archive="$BACKUP_ROOT/stale-skill-backups/$label/$(basename "$stale")"
+    run mkdir -p "$(dirname "$archive")"
+    run rm -rf "$archive"
+    run mv "$stale" "$archive"
+  done
 }
 
 install_file() {
@@ -94,8 +114,11 @@ install_skill_dir() {
 
 install_skills_to() {
   local skills_root="$1"
+  local label="$2"
   local skill
   local legacy
+
+  archive_stale_skill_backups "$skills_root" "$label"
 
   for legacy in "${LEGACY_SKILLS[@]}"; do
     if [ -e "$skills_root/$legacy" ] || [ -L "$skills_root/$legacy" ]; then
@@ -121,17 +144,17 @@ fi
 
 if [ "$INSTALL_CLAUDE" -eq 1 ]; then
   install_file "$ROOT_DIR/CLAUDE.md" "$CLAUDE_HOME/CLAUDE.md"
-  install_skills_to "$CLAUDE_HOME/skills"
+  install_skills_to "$CLAUDE_HOME/skills" "claude"
 fi
 
 if [ "$INSTALL_CODEX" -eq 1 ]; then
   install_file "$ROOT_DIR/AGENTS.md" "$CODEX_HOME/AGENTS.md"
-  install_skills_to "$CODEX_HOME/skills"
+  install_skills_to "$CODEX_HOME/skills" "codex"
 fi
 
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "Dry run complete."
 else
   echo "Installed slopflow."
-  echo "Backups, when needed, used suffix: .bak.$STAMP"
+  echo "Backups, when needed, were written under: $BACKUP_ROOT"
 fi

@@ -52,7 +52,8 @@ Use focused skills for detailed workflows instead of loading all guidance at run
 - `code-review-discipline`: correctness review, regression risk, meaningful tests, and review verdicts.
 - `adversarial-test-design`: invariant-driven adversarial unit tests for security-sensitive, correctness-critical, parser, workflow, AI/LLM, optimization, migration, and concurrency logic.
 - `rigorous-web-research`: current external research for implementation and product decisions, including competitor practice, primary sources, recent papers, docs, benchmarks, blogs, explicit uncertainty, and hard citations/links for all substantive web claims.
-- `rca-investigation`: wide and deep incident RCA, Temporal workflow IDs, competing hypotheses, timelines, proof levels, persistent artifact inspection, code-path tracing, and systemic fixes.
+- `workflow-rca`: workflow/runtime RCA evidence collection for Temporal or CI workflow IDs, GCP Cloud Logging, GCS artifacts, cache hit/miss behavior, DB artifact metadata, runtime timelines, and worker behavior; use with `rca-investigation` for full root cause.
+- `rca-investigation`: cumulative proof-driven RCA that integrates workflow evidence with competing hypotheses, code/config/DB/git-history tracing, proof levels, and systemic fixes.
 - `legacy-cleanup`: dead-code classification, reachability checks, migration leftovers, quarantine/delete decisions, and cleanup validation.
 
 If multiple skills apply, state the order before proceeding. Do not mix modes silently.
