@@ -37,6 +37,11 @@ Do not infer truth from filenames, folder names, comments, old tests, README tex
    - Say what was checked, what was not checked, and the risk of being wrong.
    - Do not claim correctness because code compiles, tests pass, or the implementation looks reasonable.
 
+8. Inherited signals
+   - Tests, schemas, requirements, and expectations that arrived via merges, parallel branches, refactors, or handoffs are claims about *past* intent — not unconditional contracts for the current change.
+   - When an inherited expectation fails or conflicts with current work, audit its lineage before satisfying it. Ask: was this contract written for the design we're shipping, or for one that has been superseded or rejected? If superseded, delete or update the expectation — do not refactor production code to match it.
+   - Treat explicit decisions (conflict resolutions, design pivots, deletions) as authoritative votes. Artifacts that depend on the rejected side — tests, helpers, downstream callers, prompt text — become cleanup candidates, not authority to reinstate the rejected side.
+
 ## Skill Routing
 
 Use focused skills for detailed workflows instead of loading all guidance at runtime:
