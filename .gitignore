@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Editor / OS cruft
+*.swp
+*~
+.idea/
+.vscode/
+
+# Stale in-place skill backups (install.sh archives these out of skills roots)
+*.bak.*
