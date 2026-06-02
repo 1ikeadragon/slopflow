@@ -76,7 +76,7 @@ If multiple skills apply, state the order before proceeding. Do not mix modes si
 
 ## Security Gate
 
-For any request to build or change a feature (new code, modified behavior, infrastructure, authentication, authorization, data handling, cryptography, networking, or dependencies), ask the user once before completing the work:
+For any request to build or change a feature (new code, modified behavior, infrastructure, authentication, authorization, data handling, cryptography, networking, or dependencies), ask the user once before beginning implementation planning after you have architecture and code context:
 
 > Should we trigger secure-design for this task?
 
