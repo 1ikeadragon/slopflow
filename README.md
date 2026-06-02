@@ -4,10 +4,7 @@ An opinionated, evidence-first discipline layer for **Claude Code** and **Codex*
 
 Coding agents are fast, fluent, and confident. That confidence is the problem: they infer behavior from filenames, trust stale comments, claim things are "already implemented," collapse inference into fact, and optimize for sounding decisive over being right. slopflow installs a shared set of always-on rules plus a skill library that force the opposite habits: ground claims in executable evidence, trace the real production path, reason before converging, and preserve uncertainty instead of hiding it.
 
-It is one maintainer's setup, version-controlled and shareable. Install it as-is or fork it.
-
 ## What it installs
-
 slopflow ships two layers:
 
 1. **Always-on prompt**: global instructions loaded into every session.
@@ -74,9 +71,6 @@ There is no uninstaller. To revert, restore the relevant files from the most rec
 The installer auto-discovers every directory under `skills/` that contains a `SKILL.md`, so adding a skill is just adding a folder.
 
 ## Philosophy
-
-The name riffs on "AI slop." The rules push every agent action toward the same standards:
-
 - **Evidence before claims.** Filenames, comments, and READMEs are hints, not proof.
 - **Production path first.** Trace from a real entrypoint before judging or changing behavior.
 - **Separate fact from inference.** Observed / Inferred / Uncertain / Conclusion.
