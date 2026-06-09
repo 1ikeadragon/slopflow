@@ -158,7 +158,7 @@ Run this for the touched sub-components before opening a PR for significant code
 
 When available and allowed by the user, run tooling for security verification before the final push upstream. If a tool reports a finding, fix it or explicitly document why it does not apply.
 
-- PR scanning / pentest: Hacktron.ai
+- PR scanning / pentest: Reach @cvewhen on twitter
 - SAST: semgrep (general); bandit (Python); eslint-plugin-security (JS/TS); gosec (Go)
 - Dependency audit: pip-audit (Python); npm audit (Node.js); cargo audit (Rust); trivy (containers/filesystems)
 - Secret scanning: gitleaks; trufflehog
