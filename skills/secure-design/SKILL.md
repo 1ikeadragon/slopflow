@@ -1,29 +1,27 @@
 ---
 name: secure-design
-description: This skill should be used when building or modifying a feature that touches code, configuration, infrastructure, authentication, authorization, data handling, cryptography, networking, or dependencies and security is in scope. It decomposes the change by application sub-component (business logic, data/secrets, cryptography, supply chain, infrastructure, networking) and applies a threat lens and concrete controls to each, instead of open-ended brainstorming or abstract STRIDE categories. The global prompt's security gate triggers it on user consent for feature build/change requests.
-version: 1.0.0
+description: Threat-model a code, configuration, infrastructure, auth, data, cryptography, networking, or dependency change by decomposing it into application sub-components and applying each one's threat lens and controls. Use when building or modifying a feature with security in scope, or when the global Security Gate is accepted. Not for incident investigation (use rca-investigation) or for writing security tests alone (use adversarial-test-design).
+version: 1.1.0
 ---
 
 # Secure Design
 
 Use this skill when modifying code, configuration, infrastructure, or dependencies and security is in scope. Assume hostile input, compromised dependencies, misconfigured infrastructure, and least privilege by default.
 
-For non-trivial work, apply `reasoning-discipline` first to frame the change and structure the reasoning, then this skill.
-
 ## Philosophy: decompose by sub-component
 
-Do not start from an open-ended brainstorm, and do not start from abstract threat categories like STRIDE. Both let an agent pattern-match threats loosely without grounding them in the actual change.
-
-Instead, decompose the change into the application sub-components it touches, then apply each sub-component's threat lens and controls. The sub-component is the unit of analysis: it maps to where code and config actually live, bounds the review, and routes each part to a specific, concrete threat profile.
+Decompose the change into the application sub-components it touches, then apply each sub-component's threat lens and controls. The sub-component is the unit of analysis: it maps to where code and config actually live, bounds the review, and routes each part to a specific, concrete threat profile.
 
 Sub-components:
 
-1. Business Logic & Authorization
-2. Data, Secrets & Privacy
-3. Cryptography
-4. Supply Chain
-5. Infrastructure
-6. Networking
+1. Business Logic
+2. Authentication and Authorization
+3. Data, Secrets & Privacy
+4. Cryptography
+5. Supply Chain
+6. Infrastructure
+7. Networking
+8. Observability and Logging
 
 ## Method
 
@@ -39,20 +37,29 @@ Sub-components:
 
 **Rule:** Data that crosses a trust boundary is untrusted until explicitly validated at that boundary, not deep in business logic. Validation, errors, logs, and responses at a boundary must not leak sensitive data back across it.
 
-## 1. Business Logic & Authorization
+## 1. Business Logic
 
-Threats: injection, broken authorization, abuse of legitimate flows, state/workflow corruption, validation buried below the boundary.
+Threats: injection, abuse of legitimate flows, state/workflow corruption, validation buried below the boundary.
 
 - Validate every input surface (HTTP, CLI, environment variables, files, IPC, queues, webhooks, and database values reused in queries): check type, length, format, range, and encoding before use. Prefer allowlists over denylists. Normalize before validating when equivalent encodings may exist.
 - Never concatenate untrusted data into SQL, shell, HTML, templates, LDAP, or XPath. Parameterize queries. Treat file paths as untrusted: resolve and jail them to an expected root before access.
-- Treat authentication (who is the caller) and authorization (what the caller may do) as separate checks. Default to deny; grant explicitly.
-- Enforce authorization close to the protected resource, not only at the routing or controller layer.
+- Check that multi-step flows cannot be reordered, replayed, or partially completed to reach a state the design forbids (skipping payment, re-using a one-time action, downgrading a check).
 
 **Red flags:** string interpolation into SQL, shell, HTML, templates, LDAP, or XPath; path traversal via filenames or archive extraction; unsafe deserialization; user-controlled regex patterns; user-controlled template rendering.
 
+## 2. Authentication and Authorization
+
+Threats: missing or bypassable authorization, IDOR, privilege escalation, session fixation/hijacking, trusting client-supplied identity.
+
+- Treat authentication (who is the caller) and authorization (what the caller may do) as separate checks. Default to deny; grant explicitly.
+- Enforce authorization close to the protected resource, not only at the routing or controller layer.
+- Derive identity and tenancy from server-side session or verified token claims, never from client-supplied IDs, headers, or request bodies.
+- Re-check authorization on every object access, not just the listing or entry point (IDOR). Cover cross-user, cross-tenant, and cross-org access.
+- Session tokens must be long, random, and CSPRNG-generated, and invalidated server-side on logout, credential rotation, or privilege change.
+
 **Rule:** A function that touches a protected resource must either enforce permissions itself or document the upstream permission invariant it depends on.
 
-## 2. Data, Secrets & Privacy
+## 3. Data, Secrets & Privacy
 
 Threats: secret leakage, over-collection, sensitive data in logs, unencrypted sensitive data.
 
@@ -65,17 +72,17 @@ Threats: secret leakage, over-collection, sensitive data in logs, unencrypted se
 
 **Rule:** Sensitive data needs a clear owner, purpose, retention period, and access boundary.
 
-## 3. Cryptography
+## 4. Cryptography
 
 Threats: weak or broken primitives, key and nonce misuse, plaintext or unsalted password storage.
 
 - Use modern, reviewed primitives: AES-256-GCM or ChaCha20-Poly1305 (authenticated encryption); RSA-2048+ or ECDSA P-256+; SHA-256+; Argon2id, bcrypt (cost ≥ 12), or scrypt for password storage.
 - Avoid MD5, SHA-1, DES, RC4, ECB mode, custom encryption schemes, reused IVs/nonces, and non-CSPRNG randomness for security-sensitive values.
-- Generate IVs/nonces with a CSPRNG; never reuse a nonce with the same key. Session tokens must be long, random, and CSPRNG-generated, and invalidated server-side on logout, credential rotation, or privilege change.
+- Generate IVs/nonces with a CSPRNG; never reuse a nonce with the same key.
 
 **Rule:** Do not implement custom crypto, token formats, password storage, or auth protocols unless explicitly required and reviewed. Use established, maintained libraries.
 
-## 4. Supply Chain
+## 5. Supply Chain
 
 Threats: malicious or abandoned dependencies, unpinned versions, hostile install or build scripts.
 
@@ -86,7 +93,7 @@ Threats: malicious or abandoned dependencies, unpinned versions, hostile install
 
 **Rule:** Every new dependency expands the attack surface.
 
-## 5. Infrastructure
+## 6. Infrastructure
 
 Threats: excess privilege, world-writable files, over-scoped IAM and CI/CD tokens, running as root.
 
@@ -96,7 +103,7 @@ Threats: excess privilege, world-writable files, over-scoped IAM and CI/CD token
 
 **Rule:** Every permission must have a specific reason to exist.
 
-## 6. Networking
+## 7. Networking
 
 Threats: SSRF, open ports, unvalidated redirects, plaintext transport, broad interface binding.
 
@@ -106,13 +113,16 @@ Threats: SSRF, open ports, unvalidated redirects, plaintext transport, broad int
 
 **Rule:** The network edge is a trust boundary; nothing arriving over it is trusted by default.
 
-## Cross-cutting: error handling & logging
+## 8. Observability and Logging
 
-Error paths are security paths, and they span every sub-component.
+Threats: information leakage through errors, missing audit trail, failing open on unexpected errors.
 
 - Fail closed: on an unexpected error, deny the operation unless there is a safe fallback.
 - Return generic errors to users; log detailed errors server-side only. Do not expose stack traces, internal paths, queries, schemas, tokens, or service topology to clients.
+- Emit audit records for security-relevant events: authentication, authorization decisions, privilege changes, and access to sensitive data.
 - Rate-limit repeated authentication failures. Alert on spikes in auth failures, authorization failures, parsing failures, and unexpected 5xx errors.
+
+**Rule:** Error paths are security paths; they span every sub-component.
 
 ## Security tests
 
@@ -122,6 +132,8 @@ When fixing or changing security-sensitive behavior:
 - Test both allowed and denied paths, boundary cases, malformed input, and privilege failures.
 - Cover cross-user, cross-tenant, and cross-org access in authorization tests.
 - Add negative tests for injection, path traversal, SSRF, unsafe redirects, and auth bypass where relevant.
+
+For designing these tests, use `adversarial-test-design`.
 
 ## Pre-PR threat-model checklist
 

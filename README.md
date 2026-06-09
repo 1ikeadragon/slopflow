@@ -10,7 +10,7 @@ slopflow ships two layers:
 1. **Always-on prompt**: global instructions loaded into every session.
    - Claude → `~/.claude/CLAUDE.md`
    - Codex → `~/.codex/AGENTS.md`
-   - These hold the Core Rules (evidence before claims, production-path first, fact vs inference, signal-loss and metric/oracle audits, meta-level reasoning checks), skill routing, identities, and the default response shape.
+   - These hold the Core Rules (evidence before claims, production-path first, fact vs inference, signal-loss and metric/oracle audits, meta-level reasoning checks), a compact skill-routing map, the security gate, and output discipline. Detailed procedure lives in the skills, not here.
 
 2. **Skills**: focused workflows loaded on demand when their triggers match. Installed to `~/.claude/skills/<skill>/` and `~/.codex/skills/<skill>/`. Detailed procedure lives here so the always-on prompt stays lean.
 
@@ -67,6 +67,7 @@ There is no uninstaller. To revert, restore the relevant files from the most rec
 | `rca-investigation` | Cumulative, proof-driven root-cause analysis with competing hypotheses and code/config/DB/git tracing. |
 | `workflow-rca` | Collecting workflow/runtime evidence (Temporal/CI IDs, cloud logs, artifacts, cache state) to feed `rca-investigation`. |
 | `rigorous-web-research` | Current external research with hard citations: competitor practice, primary docs, recent papers, benchmarks. |
+| `secure-design` | Threat-model-by-sub-component review for security-relevant changes, triggered via the always-on Security Gate. |
 
 The installer auto-discovers every directory under `skills/` that contains a `SKILL.md`, so adding a skill is just adding a folder.
 

@@ -1,259 +1,55 @@
 ---
 name: rigorous-web-research
-description: This skill should be used when the user asks to "research", "look up", "find current best practices", "see what competitors do", "latest research", "blogs", "papers", "benchmarks", "market scan", "compare tools", "implement something using current docs", or when solving or implementing a problem would materially benefit from current external evidence, competitor practice, primary documentation, recent research, or online examples.
-version: 1.0.0
+description: Current external research with hard citations: official docs, competitor practice, recent papers, benchmarks, advisories, and release notes. Use when a decision or implementation would materially benefit from current external evidence, when facts may be stale, or when the user asks to research, look up, compare tools, or find current best practices. Every substantive external claim must carry a source URL. Not for claims about the local codebase (use evidence-first).
+version: 2.0.0
 ---
 
 # Rigorous Web Research
 
-Use this skill when implementation, design, product, architecture, security, performance, or technical recommendations would materially benefit from current external evidence. The goal is to understand what reliable external sources, competitors, standards, docs, recent research, and practitioners are doing before deciding.
-
-Do not use this skill for every task. Use it when the answer may be stale, the decision has meaningful cost, the user asks for current research, or external practice could change the implementation approach.
-
-For non-trivial work, apply `reasoning-discipline` first to frame the research question and structure the reasoning, then this skill.
+Use this skill when implementation, design, product, architecture, security, performance, or technical recommendations would materially benefit from current external evidence. Use it when the answer may be stale, the decision has meaningful cost, or external practice could change the approach — not for every task. Do not rely on memory for volatile facts: if there is more than a small chance the fact changed, verify.
 
 ## Hard Citation Requirement
 
-Every substantive external claim must include a citation/link. Do not present web-derived facts, competitor behavior, pricing, API behavior, benchmark results, release details, research claims, or current best-practice claims without a source URL.
+Every substantive external claim — web-derived facts, competitor behavior, pricing, API behavior, benchmark results, release details, research claims, best-practice claims — must include a source URL **in the final answer**, not only in private notes. If a claim is inferred from sources, cite the source and label it as inference. If browsing tools are unavailable, say current web research could not be performed; do not imply a claim was verified online.
 
-Citations must appear in the final answer, not only in private notes or intermediate work. If a claim is inferred from sources, cite the source and label the claim as inference.
+## Workflow
 
-If browsing/search tools are unavailable, say current web research could not be performed and do not imply the claim was verified online.
-
-## Trigger Conditions
-
-Use this skill for:
-
-- current implementation guidance from official docs
-- competitor or market scans
-- recent papers, benchmarks, standards, advisories, and release notes
-- library/framework/API behavior that may have changed
-- product decisions informed by how others solve the problem
-- security, legal, medical, financial, or policy-sensitive claims
-- expensive build/buy/tooling decisions
-- unclear best practices where online examples may reveal common patterns or pitfalls
-- implementation tasks where current provider docs are the source of truth
-
-Do not rely on memory for volatile facts. If there is more than a small chance the fact changed, verify.
-
-## Research Question First
-
-Before searching, state:
-
-```text
-Research question:
-- ...
-
-Decision this research informs:
-- ...
-
-What would change my implementation/recommendation:
-- ...
-```
-
-If the question is broad, split it into focused subquestions.
-
-## Competing Hypotheses
-
-For non-trivial research, start with 2-4 plausible hypotheses:
-
-```text
-Hypotheses:
-- H1: ...
-  Evidence that would support it: ...
-  Evidence that would weaken it: ...
-- H2: ...
-  Evidence that would support it: ...
-  Evidence that would weaken it: ...
-```
-
-Do not search only to confirm a preferred answer.
+1. **State the research question** and the decision it informs, plus what evidence would change your recommendation. Split broad questions into focused subquestions.
+2. **For non-trivial questions, start with 2-4 competing hypotheses**, each with the evidence that would support or weaken it. Do not search only to confirm a preferred answer.
+3. **Map the space broadly, then narrow to primary sources.** Compare at least two independent sources for important claims.
+4. **Convert findings into implementation implications**, and state what was not checked.
 
 ## Source Strategy
 
-Prefer sources in this order:
+Prefer, in order:
 
-1. Primary sources: official docs, specs, standards, release notes, API references, source repos, changelogs, RFCs, vendor docs.
-2. Primary evidence from competitors: product docs, public pricing/docs, engineering blogs describing their own system, public demos, changelogs.
+1. Primary sources: official docs, specs, standards, release notes, API references, source repos, changelogs, RFCs.
+2. Primary evidence from competitors: their product docs, public pricing, engineering blogs about their own systems, changelogs.
 3. Peer-reviewed or preprint research, with publication date and limitations.
-4. Reputable engineering blogs, incident reports, benchmark writeups, and practitioner posts.
-5. Community sources only for leads, failure reports, and practical caveats. Do not treat them as authoritative without corroboration.
+4. Reputable engineering blogs, incident reports, benchmark writeups.
+5. Community sources only for leads and practical caveats — not authoritative without corroboration.
 
-For technical implementation claims, rely on primary docs or source code when possible.
+Record dates: publication, last-updated, version, and access date for volatile pages. When sources conflict, check version and scope first; prefer the newer source only when it covers the same version/scope. Newer is not automatically better. Preserve unresolved conflicts instead of forcing a conclusion.
 
-## Recency Discipline
+## Competitor / Market Scans
 
-Record dates:
+Define the comparison set and why each example is relevant. Separate observed public behavior from inferred internals; state what cannot be known externally. Identify common patterns and meaningful outliers; avoid overfitting to a single competitor.
 
-- publication date
-- last updated date if available
-- version number
-- accessed date for volatile pages
+## Quality Bar
 
-When sources conflict, prefer the newer source only if it is relevant to the same version/scope. Newer is not automatically better.
+Every important conclusion should carry: the claim, its source URL(s), a proof level (primary source / corroborated secondary / single secondary / inference), the date/version, limitations, and its implementation implication. Avoid vague summaries like "people do X" unless the sources actually support it.
 
-## Search Workflow
+Report research shortcuts as signal loss: skipped source classes, paywalled material, biased search terms, reliance on one vendor's docs, no primary source found.
 
-1. Define the research question and decision.
-2. Identify source classes needed: docs, competitors, papers, blogs, benchmarks, issues, source code.
-3. Run broad searches to map the space.
-4. Narrow to primary sources and high-signal secondary sources.
-5. Compare at least two independent sources for important claims.
-6. Record contradictions and stale-source risk.
-7. Convert findings into implementation implications.
-8. State what was not checked.
-
-## Competitor / Market Scan
-
-When checking what competitors or comparable systems do:
-
-- define the comparison set and why each example is relevant
-- separate public product behavior from inferred internals
-- capture screenshots or exact public docs only when needed
-- avoid overfitting to a single competitor
-- identify common patterns and meaningful outliers
-- state what cannot be known externally
-
-Use:
-
-```text
-Competitor / comparable systems:
-- ...
-
-Observed public behavior:
-- ...
-
-Inferred but not proven:
-- ...
-
-Implementation implications:
-- ...
-```
-
-## Research Quality Bar
-
-Every important conclusion should answer:
-
-```text
-Claim:
-- ...
-
-Source(s):
-- ...  # required URL/link for every substantive external claim
-
-Proof level:
-- primary source / corroborated secondary / single secondary / inference
-
-Date/version:
-- ...
-
-Limitations:
-- ...
-
-Implementation implication:
-- ...
-```
-
-Avoid vague summaries like "people do X" unless the sources actually support it.
-
-## Handling Conflicts
-
-When sources disagree:
-
-- verify version and date
-- check whether they discuss the same environment, API tier, region, pricing plan, or deployment mode
-- prefer official docs for current behavior
-- use issue trackers and forums to identify real-world caveats
-- preserve unresolved conflict instead of forcing a conclusion
-
-Use:
-
-```text
-Conflict:
-- ...
-
-Likely reason:
-- version mismatch / scope mismatch / outdated source / unclear
-
-Decision:
-- ...
-
-Residual uncertainty:
-- ...
-```
-
-## Implementation Integration
-
-After research, map evidence to concrete action:
-
-```text
-Implementation impact:
-- Must do: ...
-- Should do: ...
-- Avoid: ...
-- Open question: ...
-```
-
-Do not paste research into implementation without checking the local production path. External practice informs the decision; local code determines where and how to change behavior.
-
-## Signal Loss And Shortcuts
-
-Report shortcuts:
-
-- skipped source classes
-- paywalled or inaccessible material
-- search terms that may bias results
-- lack of competitor visibility
-- reliance on one vendor's docs
-- no benchmark reproduction
-- no primary source found
-
-Use:
-
-```text
-Research limitations:
-- ...
-
-Signal potentially lost:
-- ...
-
-How to reduce uncertainty:
-- ...
-```
-
-## Output Format
-
-Use this format when reporting research:
+## Output
 
 ```text
 Research question:
-- ...
-
-Sources checked:
-- ...
-
-Findings:
-- ...
-
-Competitor / external practice:
-- ...
-
-What is proven vs inferred:
-- Proven by primary sources: ...
-- Corroborated: ...
-- Inferred: ...
-- Still unknown: ...
-
-Implementation implications:
-- ...
-
-Risks / limitations:
-- ...
-
-Exact searches / source links:
-- ...  # include the exact URLs used for all substantive external claims
+Findings:            # each substantive claim cited
+Proven by primary sources / corroborated / inferred / still unknown:
+Implementation implications:  # must do / should do / avoid / open questions
+Risks and limitations:
+Sources:             # exact URLs used
 ```
 
-## Final Rule
-
-Research is useful only if it changes or validates a decision. End by stating what the research implies for the implementation, recommendation, or next step.
+Do not paste research into implementation without checking the local production path: external practice informs the decision; local code determines where and how to change behavior. End by stating what the research implies for the implementation, recommendation, or next step.
