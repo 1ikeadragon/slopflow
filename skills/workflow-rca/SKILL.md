@@ -1,6 +1,6 @@
 ---
 name: workflow-rca
-description: Runtime evidence collection for workflow and CI incidents: Temporal workflow/run ids, CI job ids, GCP Cloud Logging queries, GCS artifact lookup, workflow DB artifacts, cache hit/miss proof, and worker behavior. Use when the input is a workflow/run identifier or a question about why a workflow failed, retried, slowed down, loaded cache, or built fresh. This skill gathers and proves runtime facts; hand its evidence packet to rca-investigation for the cumulative code-level root cause.
+description: Runtime evidence collection for workflow and CI incidents workflow run ids, CI job ids, GCP Cloud Logging queries, GCS artifact lookup, workflow DB artifacts, cache hit/miss proof, and worker behavior. Use when the input is a run identifier or a question about why a workflow failed, retried, slowed down, loaded cache, or built fresh. This skill gathers and proves runtime facts, hand its evidence packet to rca-investigation for the cumulative code-level root cause.
 version: 1.1.0
 ---
 
