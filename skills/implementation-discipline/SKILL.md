@@ -1,6 +1,6 @@
 ---
 name: implementation-discipline
-description: The coding workflow for any change that edits code or configuration: scope calibration, implementation plan, plan audit, validation, and post-implementation audit. Use when implementing, fixing, adding, updating, or refactoring. Not for deciding whether code is safe to delete (use legacy-cleanup) or for review of someone else's change (use code-review-discipline).
+description: The coding workflow for any change that edits code or configuration scope calibration, implementation plan, plan audit, validation, and post-implementation audit. Use when implementing, fixing, adding, updating, or refactoring. Not for deciding whether code is safe to delete use legacy-cleanup or for review of someone else's change use code-review-discipline.
 version: 2.0.0
 ---
 
