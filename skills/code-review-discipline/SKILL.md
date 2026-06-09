@@ -1,6 +1,6 @@
 ---
 name: code-review-discipline
-description: Correctness-first review of diffs and PRs: behavioral regressions, hidden callers, production-path mismatch, error-handling gaps, weak tests, and a verdict. Use when reviewing a change, checking a diff for bugs, or deciding approve vs request-changes. Not for designing the system (use architecture-review) or writing new tests (use adversarial-test-design).
+description: Correctness-first review of diffs and PRs behavioral regressions, hidden callers, production-path mismatch, error-handling gaps, weak tests, and a verdict. Use when reviewing a change, checking a diff for bugs, or deciding approve vs request-changes. Not for designing the system (use architecture-review) or writing new tests (use adversarial-test-design).
 version: 2.0.0
 ---
 
