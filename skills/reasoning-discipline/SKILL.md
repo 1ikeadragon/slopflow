@@ -1,6 +1,6 @@
 ---
 name: reasoning-discipline
-description: The reasoning spine for non-trivial, ambiguous, open-ended, or high-stakes work: frame the problem, generate structurally different options, verify load-bearing claims, diagnose with competing hypotheses, evaluate against weighted criteria, decide under uncertainty, and synthesize — executed via mode files read one at a time with a todo ledger. Also holds the metric/oracle audit and meta-reasoning checks behind Core Rules 9-10. Use for design decisions, tradeoffs, "which approach" questions, planning, and before reporting any count, cost, accuracy, or pass/fail number. Engage on your own when the work warrants it; skip for trivial or mechanical tasks.
+description: The reasoning spine for non-trivial, ambiguous, open-ended, or high-stakes work frame the problem, generate structurally different options, verify load-bearing claims, diagnose with competing hypotheses, evaluate against weighted criteria, decide under uncertainty, and synthesize — executed via mode files read one at a time with a todo ledger. Also holds the metric/oracle audit and meta-reasoning checks behind Core Rules 9-10. Use for design decisions, tradeoffs, "which approach" questions, planning, and before reporting any count, cost, accuracy, or pass/fail number. Engage on your own when the work warrants it; skip for trivial or mechanical tasks.
 version: 3.0.0
 ---
 
