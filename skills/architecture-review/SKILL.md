@@ -1,6 +1,6 @@
 ---
 name: architecture-review
-description: System-level analysis and design: mapping entrypoints, active wiring, data/control flow, runtime variants, boundaries, and failure modes before proposing a design. Use for architecture questions, system design, RFCs, design reviews, production-path mapping, or "how is this system wired". Not for line-level correctness review of a diff (use code-review-discipline).
+description: System-level analysis and design mapping entrypoints, active wiring, data/control flow, runtime variants, boundaries, and failure modes before proposing a design. Use for architecture questions, system design, RFCs, design reviews, production-path mapping, or "how is this system wired". Not for line-level correctness review of a diff (use code-review-discipline).
 version: 2.0.0
 ---
 
