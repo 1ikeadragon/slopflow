@@ -166,3 +166,6 @@ When available and allowed by the user, run tooling for security verification be
 - Containers: trivy image; docker scout
 
 **Rule:** No silent signal loss. If a security check is skipped, say which and why, and state the residual risk. Do not silently suppress security findings.
+
+## Output
+Return a table of risks identified by the threat model, their category and the mitigations. Run reasoning-discipline to verify that the design is secure systematically.
