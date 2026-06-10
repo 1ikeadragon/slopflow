@@ -54,6 +54,7 @@ Preview everything first with `./install.sh --dry-run`.
 There is no uninstaller. To revert, restore the relevant files from the most recent `~/.slopflow-backups/<timestamp>/` directory (it mirrors the original paths), and delete any slopflow skill directories you no longer want from `~/.claude/skills/` and `~/.codex/skills/`.
 
 ## Skills
+Bad at naming stuff so corny names deal wiht it :pray:
 
 | Skill | Use it for |
 | --- | --- |
