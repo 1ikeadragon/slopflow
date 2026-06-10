@@ -183,24 +183,6 @@ sqlite3 "<db-path>" ".schema"
 sqlite3 "<db-path>" "SELECT name, type FROM sqlite_master ORDER BY type, name;"
 ```
 
-For finding/call-graph style DBs, query only tables that exist. Useful checks often include:
-
-```sql
-SELECT COUNT(*) FROM findings;
-SELECT hidden, false_positive, COUNT(*) FROM findings GROUP BY hidden, false_positive;
-SELECT created_by, validated_by, COUNT(*) FROM findings GROUP BY created_by, validated_by;
-SELECT source_finding_id, COUNT(*) FROM findings WHERE source_finding_id IS NOT NULL GROUP BY source_finding_id ORDER BY COUNT(*) DESC;
-SELECT * FROM finding_associated LIMIT 20;
-SELECT * FROM finding_tags LIMIT 20;
-```
-
-For duplicate or lineage questions:
-
-- treat each row as a pipeline artifact, not automatically the final reportable result
-- trace who created each row
-- identify hidden duplicate rows, false-positive rows, low-leverage rows, and surviving rows separately
-- inspect stored metadata/judge reasoning instead of guessing
-
 ## 7. Cache And Rebuild Proof
 
 Do not say "cache hit" unless logs prove the specific cache state:
