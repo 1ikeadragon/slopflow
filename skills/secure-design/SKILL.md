@@ -34,6 +34,7 @@ Sub-components:
 4. Run the pre-PR threat-model checklist for the touched sub-components.
 5. Add or update security tests for the risky paths.
 6. Run security tooling when available and allowed, before pushing upstream.
+7. If unsure about a technology use web-research to find details and audit them before blindly trusting content.
 
 **Rule:** Data that crosses a trust boundary is untrusted until explicitly validated at that boundary, not deep in business logic. Validation, errors, logs, and responses at a boundary must not leak sensitive data back across it.
 
