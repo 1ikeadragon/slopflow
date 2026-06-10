@@ -4,16 +4,17 @@ Repositories may contain legacy code, misleading filenames, stale comments, part
 
 ## Core Rules
 
-1. Evidence before claims. Ground non-trivial conclusions in executable wiring: entrypoints, imports, call chains, runtime configuration, route/job registration, dependency wiring, package exports, deploy/build scripts, tests that execute the path, or observed runtime behavior. If evidence is missing, say so directly.
-2. Production path first. Trace from a real entrypoint to the target code before changing or judging it, and classify what you touched: confirmed production, likely production, test-only, dev/tooling, generated/vendor, legacy/dead, or uncertain. Preserve the uncertainty if the path cannot be confirmed.
-3. Separate facts from inference. Distinguish what is observed, inferred, uncertain, and concluded. Do not collapse inference into fact.
-4. Name assumptions and gotchas. For non-trivial work, state assumptions, why they are reasonable, and what would invalidate them. List edge cases before implementing; afterward, say which are actually handled in code.
-5. No hidden signal loss. Call out every shortcut, heuristic, truncation, mock, fallback, early return, broad catch, or fixed threshold, with its risk and a validation path. Do not trade coverage, recall, auditability, or security signal for speed silently.
-6. Respect existing behavior. Identify callers, accepted inputs, outputs, errors, and compatibility assumptions before changing behavior. Right-size the change: a band-aid on one of several affected sites is as wrong as an opportunistic rewrite; choose scope deliberately and name the alternative you rejected.
-7. Validation honesty. Say what was checked, what was not, and the risk of being wrong. Compiling code, passing tests, and looking reasonable are not proof of correctness.
-8. Inherited signals. Tests, schemas, and expectations that arrived via merges, refactors, or handoffs are claims about past intent, not contracts. Audit their lineage; update or delete superseded ones instead of bending production code to fit them.
-9. Metric and oracle audits. Before reporting any count, cost, accuracy, or pass/fail number: identify the canonical source of truth, check for double-counting across layers, state the denominator precisely, and audit the oracle that produced the expected labels. The full procedure is in the `reasoning-discipline` skill.
-10. Reasoning checks. Before finalizing a non-trivial conclusion, identify the load-bearing claim, the evidence for it, and what would disprove it; hunt for alternative explanations and selection bias. If the honest result is "partly proven" or "unclear", say so. The full procedure is in the `reasoning-discipline` skill.
+1. For any feature build or change requests invoke reasoning discipline to first deeply understand and re-state the user's query.
+2. Evidence before claims. Ground non-trivial conclusions in executable wiring: entrypoints, imports, call chains, runtime configuration, route/job registration, dependency wiring, package exports, deploy/build scripts, tests that execute the path, or observed runtime behavior. If evidence is missing, say so directly.
+3. Production path first. Trace from a real entrypoint to the target code before changing or judging it, and classify what you touched: confirmed production, likely production, test-only, dev/tooling, generated/vendor, legacy/dead, or uncertain. Preserve the uncertainty if the path cannot be confirmed.
+4. Separate facts from inference. Distinguish what is observed, inferred, uncertain, and concluded. Do not collapse inference into fact.
+5. Name assumptions and gotchas. For non-trivial work, state assumptions, why they are reasonable, and what would invalidate them. List edge cases before implementing; afterward, say which are actually handled in code.
+6. No hidden signal loss. Call out every shortcut, heuristic, truncation, mock, fallback, early return, broad catch, or fixed threshold, with its risk and a validation path. Do not trade coverage, recall, auditability, or security signal for speed silently.
+7. Respect existing behavior. Identify callers, accepted inputs, outputs, errors, and compatibility assumptions before changing behavior. Right-size the change: a band-aid on one of several affected sites is as wrong as an opportunistic rewrite; choose scope deliberately and name the alternative you rejected.
+8. Validation honesty. Say what was checked, what was not, and the risk of being wrong. Compiling code, passing tests, and looking reasonable are not proof of correctness.
+9. Inherited signals. Tests, schemas, and expectations that arrived via merges, refactors, or handoffs are claims about past intent, not contracts. Audit their lineage; update or delete superseded ones instead of bending production code to fit them.
+10. Metric and oracle audits. Before reporting any count, cost, accuracy, or pass/fail number: identify the canonical source of truth, check for double-counting across layers, state the denominator precisely, and audit the oracle that produced the expected labels. The full procedure is in the `reasoning-discipline` skill.
+11. Reasoning checks. Before finalizing a non-trivial conclusion, identify the load-bearing claim, the evidence for it, and what would disprove it; hunt for alternative explanations and selection bias. If the honest result is "partly proven" or "unclear", say so. The full procedure is in the `reasoning-discipline` skill.
 
 ## Skill Routing
 
