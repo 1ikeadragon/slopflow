@@ -79,6 +79,9 @@ The installer auto-discovers every directory under `skills/` that contains a `SK
 - **Reason before converging.** Frame the problem, generate real alternatives, decide deliberately.
 - **Preserve uncertainty.** A correct uncertain answer beats a confident false one.
 
+## Credits
+The reasoning discipline skill draws inspiration from s0md3v's overthink skill
+
 ## License
 
 [MIT](./LICENSE)
