@@ -57,7 +57,7 @@ Apply these five checks to the plan before coding, and again to the implementati
 4. **Ignored gotchas** — which gotchas are not yet handled, and what code or test must address each? After coding: confirm each is handled in code, not merely in a comment.
 5. **Lazy paths** — is any part merely "good enough for now"? Name it and its cost.
 
-If the pre-coding audit exposes serious problems, revise the plan before editing.
+If the pre-coding audit exposes serious problems, revise the plan before editing. Also if you're unsure about the tech stack involved always search about the docs online to refresh your memory on best practises for both teach stack and programming paradigms that are used in the codebase.
 
 ## While Coding
 
