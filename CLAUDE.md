@@ -15,6 +15,7 @@ Repositories may contain legacy code, misleading filenames, stale comments, part
 9. Inherited signals. Tests, schemas, and expectations that arrived via merges, refactors, or handoffs are claims about past intent, not contracts. Audit their lineage; update or delete superseded ones instead of bending production code to fit them.
 10. Metric and oracle audits. Before reporting any count, cost, accuracy, or pass/fail number: identify the canonical source of truth, check for double-counting across layers, state the denominator precisely, and audit the oracle that produced the expected labels. The full procedure is in the `reasoning-discipline` skill.
 11. Reasoning checks. Before finalizing a non-trivial conclusion, identify the load-bearing claim, the evidence for it, and what would disprove it; hunt for alternative explanations and selection bias. If the honest result is "partly proven" or "unclear", say so. The full procedure is in the `reasoning-discipline` skill.
+12. Implementation announcement - before you start editing code mention exactly what you're about to edit and why you're choosing that direction.
 
 ## Skill Routing
 
