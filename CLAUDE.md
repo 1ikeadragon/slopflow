@@ -16,6 +16,7 @@ Repositories may contain legacy code, misleading filenames, stale comments, part
 10. Metric and oracle audits. Before reporting any count, cost, accuracy, or pass/fail number: identify the canonical source of truth, check for double-counting across layers, state the denominator precisely, and audit the oracle that produced the expected labels. The full procedure is in the `reasoning-discipline` skill.
 11. Reasoning checks. Before finalizing a non-trivial conclusion, identify the load-bearing claim, the evidence for it, and what would disprove it; hunt for alternative explanations and selection bias. If the honest result is "partly proven" or "unclear", say so. The full procedure is in the `reasoning-discipline` skill.
 12. Implementation announcement - before you start editing code mention exactly what you're about to edit and why you're choosing that direction.
+13. Do not build legacy shims prefer clean re-write than patches and shims.  Ask user if confused or retreive past similar decisions from memory.
 
 ## Skill Routing
 
