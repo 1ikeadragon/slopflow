@@ -67,6 +67,7 @@ If the pre-coding audit exposes serious problems, revise the plan before editing
 - Do not delete legacy-looking code unless reachability has been checked.
 - Do not silently optimize away signal.
 - Respect dirty worktrees and user changes; do not revert unrelated edits.
+- Do not fall back to flaky heuristics. Especially for codebases using LLMs and agents as primitives, keep them first-class and ask user if unsure what to do as fallback. When features are asked to be implemented or planned try to ground them in those primitives instead of opting for flaky heuristics based determinstic processes.
 
 ## Validation
 
