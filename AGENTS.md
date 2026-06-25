@@ -4,7 +4,7 @@ Repositories may contain legacy code, misleading filenames, stale comments, part
 
 ## Core Rules
 
-1. For any feature build or change requests invoke reasoning discipline to first deeply understand and re-state the user's query.
+1. Invoke `reasoning-discipline` before every non-trivial task, including feature work, behavior changes, reviews, architecture/design, RCA, cleanup, agent/prompt work, and any metric or oracle claim. Start by restating the goal, likely failure mode, constraints, evidence needed, and expected output. Skip only for trivially mechanical commands that require no judgment.
 2. Evidence before claims. Ground non-trivial conclusions in executable wiring: entrypoints, imports, call chains, runtime configuration, route/job registration, dependency wiring, package exports, deploy/build scripts, tests that execute the path, or observed runtime behavior. If evidence is missing, say so directly.
 3. Production path first. Trace from a real entrypoint to the target code before changing or judging it, and classify what you touched: confirmed production, likely production, test-only, dev/tooling, generated/vendor, legacy/dead, or uncertain. Preserve the uncertainty if the path cannot be confirmed.
 4. Separate facts from inference. Distinguish what is observed, inferred, uncertain, and concluded. Do not collapse inference into fact.
@@ -15,6 +15,7 @@ Repositories may contain legacy code, misleading filenames, stale comments, part
 9. Inherited signals. Tests, schemas, and expectations that arrived via merges, refactors, or handoffs are claims about past intent, not contracts. Audit their lineage; update or delete superseded ones instead of bending production code to fit them.
 10. Metric and oracle audits. Before reporting any count, cost, accuracy, or pass/fail number: identify the canonical source of truth, check for double-counting across layers, state the denominator precisely, and audit the oracle that produced the expected labels. The full procedure is in the `reasoning-discipline` skill.
 11. Reasoning checks. Before finalizing a non-trivial conclusion, identify the load-bearing claim, the evidence for it, and what would disprove it; hunt for alternative explanations and selection bias. If the honest result is "partly proven" or "unclear", say so. The full procedure is in the `reasoning-discipline` skill.
+12. Prompt and skill quality. Every instruction in prompts, skills, and agent specs must change an observable behavior: trigger, decision boundary, allowed action, output shape, validation step, handoff rule, refusal/escalation path, or failure behavior. Delete generic no-ops such as "be thorough", "write clean code", or "make a detailed commit message" unless they are replaced with concrete checks.
 
 ## Skill Routing
 
@@ -30,9 +31,10 @@ Detailed procedure lives in skills, loaded on demand:
 - `rca-investigation`: cumulative proof-driven root-cause analysis with competing hypotheses.
 - `workflow-rca`: runtime evidence collection for workflow/CI incidents (Temporal, cloud logs, artifacts, caches).
 - `rigorous-web-research`: current external evidence with hard citations.
+- `agent-system-design`: design, review, or improve agentic systems with LLM loops, tools, memory/state, handoffs, subagents, guardrails, tracing, evaluations, or agent prompts.
 - `secure-design`: threat-model-by-sub-component review for security-relevant changes; triggered via the Security Gate below.
 
-Composition: for non-trivial work, apply `reasoning-discipline` to frame the problem, then the matching domain skill; state the order when using more than one. For incident RCA, `workflow-rca` collects runtime evidence and hands its packet to `rca-investigation` for the root cause. Skill descriptions route the common cases; this list exists for agents that do not load skill metadata automatically.
+Composition: for non-trivial work, apply `reasoning-discipline` first, then the matching domain skill; state the order when using more than one. For agentic systems, apply `agent-system-design` after the reasoning frame and pair it with `architecture-review` or `evidence-first` when existing code/runtime wiring matters. For incident RCA, `workflow-rca` collects runtime evidence and hands its packet to `rca-investigation` for the root cause. Skill descriptions route the common cases; this list exists for agents that do not load skill metadata automatically.
 
 ## Security Gate
 

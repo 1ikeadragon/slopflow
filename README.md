@@ -68,6 +68,7 @@ Bad at naming stuff so corny names deal wiht it :pray:
 | `rca-investigation` | Cumulative, proof-driven root-cause analysis with competing hypotheses and code/config/DB/git tracing. |
 | `workflow-rca` | Collecting workflow/runtime evidence (Temporal/CI IDs, cloud logs, artifacts, cache state) to feed `rca-investigation`. |
 | `rigorous-web-research` | Current external research with hard citations: competitor practice, primary docs, recent papers, benchmarks. |
+| `agent-system-design` | Designing or reviewing agentic systems: LLM loops, tools, context/state, handoffs, guardrails, tracing, evals, and prompt/skill quality. |
 | `secure-design` | Threat-model-by-sub-component review for security-relevant changes, triggered via the always-on Security Gate. |
 
 The installer auto-discovers every directory under `skills/` that contains a `SKILL.md`, so adding a skill is just adding a folder.
@@ -78,6 +79,7 @@ The installer auto-discovers every directory under `skills/` that contains a `SK
 - **Separate fact from inference.** Observed / Inferred / Uncertain / Conclusion.
 - **No hidden signal loss.** Call out every shortcut, mock, fallback, or truncation and its risk.
 - **Reason before converging.** Frame the problem, generate real alternatives, decide deliberately.
+- **Prompts must do work.** Delete no-op virtues unless they become observable decision rules, validation checks, or failure behavior.
 - **Preserve uncertainty.** A correct uncertain answer beats a confident false one.
 
 ## Credits
