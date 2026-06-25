@@ -1,4 +1,0 @@
-interface:
-  display_name: "Agent System Design"
-  short_description: "Design reliable agentic systems"
-  default_prompt: "Use $agent-system-design to design a reliable agentic workflow with tools, state, guardrails, and evals."

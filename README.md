@@ -69,6 +69,7 @@ Bad at naming stuff so corny names deal wiht it :pray:
 | `workflow-rca` | Collecting workflow/runtime evidence (Temporal/CI IDs, cloud logs, artifacts, cache state) to feed `rca-investigation`. |
 | `rigorous-web-research` | Current external research with hard citations: competitor practice, primary docs, recent papers, benchmarks. |
 | `agent-system-design` | Designing or reviewing agentic systems: LLM loops, tools, context/state, handoffs, guardrails, tracing, evals, and prompt/skill quality. |
+| `data-validation` | Programmatically validating datasets, parsed records, tables, logs, counts, metrics, matrix results, and data-dependent claims. |
 | `secure-design` | Threat-model-by-sub-component review for security-relevant changes, triggered via the always-on Security Gate. |
 
 The installer auto-discovers every directory under `skills/` that contains a `SKILL.md`, so adding a skill is just adding a folder.
