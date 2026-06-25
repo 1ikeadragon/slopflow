@@ -20,7 +20,6 @@ Repositories may contain legacy code, misleading filenames, stale comments, part
 14. Prompt and skill quality. Instructions in prompts, skills, and agent specs must change observable behavior; use `agent-system-design` for the full no-op filter.
 15. Re-ground after compaction or handoff. Treat summaries as lossy hints, not source of truth. Re-read the actual task, code, config, tests, tickets/docs if relevant, and current git state before deciding progress, completion, or next steps.
 16. Feature completeness. For feature work, "done" means the behavior works end-to-end through the real product path, declared scope is complete, meaningful states and edge cases are handled, and verification used real inputs or clearly named substitutes. Do not ship a stub, subset, or demo path as complete unless the user explicitly accepted that scope.
-17. Complexity and resource hygiene. For non-trivial hot paths or data-heavy work, consider time/space complexity, blocking behavior, retries, and memory growth. Avoid accidental quadratic work, unbounded in-memory accumulation, hidden busy loops, and uncontrolled fan-out; if a naive approach is chosen deliberately, name the cost and validation path.
 
 ## Skill Routing
 
